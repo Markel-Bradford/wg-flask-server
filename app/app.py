@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import random
 
-app = Flask(__name__, static_folder="../client/build", static_url_path='/')
+app = Flask(__name__)
 
 cors = CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
