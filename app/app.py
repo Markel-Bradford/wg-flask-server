@@ -4,7 +4,7 @@ import random
 
 app = Flask(__name__)
 
-cors = CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+cors = CORS(app, origins=["https://safariguessinggame.online/"], supports_credentials=True)
 
 @app.route('/')
 def index():
@@ -40,12 +40,12 @@ def start_game():
     return jsonify(response)
 
 @app.route('/app/make_guess', methods=['OPTIONS', 'POST'])
-@cross_origin(origin='http://localhost:3000', supports_credentials=True)
+@cross_origin(origin='https://safariguessinggame.online/', supports_credentials=True)
 def handle_make_guess():
     if request.method == 'OPTIONS':
         # Respond to the OPTIONS preflight request
         headers = {
-            'Access-Control-Allow-Origin': 'http://localhost:3000',
+            'Access-Control-Allow-Origin': 'https://safariguessinggame.online/',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Credentials': 'true',
