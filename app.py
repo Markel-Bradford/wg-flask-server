@@ -79,7 +79,8 @@ def handle_make_guess():
                 "turns_remaining": num_turns - turns_played,
                 "game_over": turns_played == num_turns,
                 "correct_guess": False,
-                "hint": hint
+                "hint": hint,
+                "correct_answer": word_to_guess if turns_played == num_turns else None  # Include the correct answer if game is over
             }
 
         turns_played += 1
@@ -90,7 +91,8 @@ def handle_make_guess():
             "turns_remaining": num_turns - turns_played,
             "game_over": turns_played == num_turns,
             "correct_guess": guess == word_to_guess,
-            "hint": hint
+            "hint": hint,
+            "correct_answer": word_to_guess if turns_played == num_turns else None  # Include the correct answer if game is over
         }
 
         return jsonify(response)
