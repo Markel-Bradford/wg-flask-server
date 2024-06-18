@@ -3,7 +3,7 @@ from flask_cors import CORS, cross_origin
 import random
 
 def create_app():
-    app_instance = Flask(__name__, static_folder='static')
+    app_instance = Flask(__name__)
     CORS(app_instance, origins=["https://safariguessinggame.online/"], supports_credentials=True)
 
     @app_instance.route('/')
@@ -14,7 +14,7 @@ def create_app():
 
 app = create_app()
 
-word_bank = ['lion', 'leopard', 'giraffe', 'elephant', 'hippo', 'cheetah', 'rhino', 'zebra', 'gorilla', 'baboon', 'monkey', 'gazelle', 'buffalo', 'hyena', 'crane', 'snake', 'warthog']
+word_bank = ['lion','leopard','giraffe','elephant','hippo','cheetah','rhino','zebra','gorilla','baboon','monkey','gazelle','buffalo','hyena','crane','snake','warthog']
 num_turns = 5
 
 def generate_hint(word, incorrect_letter, correct_guesses):
@@ -66,7 +66,7 @@ def handle_make_guess():
                 "turns_remaining": num_turns - turns_played,
                 "game_over": False,
                 "correct_guess": True,
-                "hint": generate_hint(word_to_guess, incorrect_letter, correct_guesses)
+                "hint": hint
             }
         else:
             incorrect_word.append(guess)
@@ -79,7 +79,7 @@ def handle_make_guess():
                 "turns_remaining": num_turns - turns_played,
                 "game_over": turns_played == num_turns,
                 "correct_guess": False,
-                "hint": hint,
+                "hint": hint
             }
 
         turns_played += 1
