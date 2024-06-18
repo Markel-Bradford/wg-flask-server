@@ -2,19 +2,22 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS, cross_origin
 import random
 
-app = Flask(__name__)
+def create_app():
+    app_instance = Flask(__name__, static_folder='static')
+    CORS(app_instance, origins=["https://safariguessinggame.online/"], supports_credentials=True)
 
-cors = CORS(app, origins=["https://safariguessinggame.online/"], supports_credentials=True)
+    @app_instance.route('/')
+    def index():
+        return app_instance.send_static_file('index.html')
 
-@app.route('/')
-def index():
-    return app.send_static_file('index.html')
+    return app_instance
 
-word_bank = ['lion','leopard','giraffe','elephant','hippo','cheetah','rhino','zebra','gorilla','baboon','monkey','gazelle','buffalo','hyena','crane','snake','warthog']
+app = create_app()
+
+word_bank = ['lion', 'leopard', 'giraffe', 'elephant', 'hippo', 'cheetah', 'rhino', 'zebra', 'gorilla', 'baboon', 'monkey', 'gazelle', 'buffalo', 'hyena', 'crane', 'snake', 'warthog']
 num_turns = 5
 
 def generate_hint(word, incorrect_letter, correct_guesses):
-    # Logic to generate hints (e.g., reveal correct letters)
     hint = ''.join([letter if letter in correct_guesses else '_' for letter in word])
     return hint
 
@@ -26,7 +29,6 @@ def start_new_game():
     word_to_guess = random.choice(word_bank)
     correct_guesses = []
 
-# Start a new game on server setup
 start_new_game()
 
 @app.route('/app/start_game', methods=['GET'])
@@ -43,7 +45,6 @@ def start_game():
 @cross_origin(origin='https://safariguessinggame.online/', supports_credentials=True)
 def handle_make_guess():
     if request.method == 'OPTIONS':
-        # Respond to the OPTIONS preflight request
         headers = {
             'Access-Control-Allow-Origin': 'https://safariguessinggame.online/',
             'Access-Control-Allow-Methods': 'POST',
@@ -57,9 +58,8 @@ def handle_make_guess():
         data = request.get_json()
         guess = data.get('guess').lower()
 
-        # Game loop logic here
         if guess == word_to_guess:
-            correct_guesses.extend(set(guess))  # Add correct guesses to the list
+            correct_guesses.extend(set(guess))
             hint = generate_hint(word_to_guess, incorrect_letter, correct_guesses)
             response = {
                 "incorrect_word": incorrect_word,
@@ -67,32 +67,31 @@ def handle_make_guess():
                 "game_over": False,
                 "correct_guess": True,
                 "hint": generate_hint(word_to_guess, incorrect_letter, correct_guesses)
-                }
+            }
         else:
-                incorrect_word.append(guess)
-                incorrect_letter.extend(set(guess))
-                correct_guesses.extend(set(guess))  # Add correct guesses to the list
-                hint = generate_hint(word_to_guess, incorrect_letter, correct_guesses)
-                response = {
-                    "incorrect_letter": ' '.join(incorrect_letter),
-                    "incorrect_word": ' '.join(incorrect_word),
-                    "turns_remaining": num_turns - turns_played,
-                    "game_over": turns_played == num_turns,
-                    "correct_guess": False,
-                    "hint": hint,
-                }
-        
-        turns_played +=1
+            incorrect_word.append(guess)
+            incorrect_letter.extend(set(guess))
+            correct_guesses.extend(set(guess))
+            hint = generate_hint(word_to_guess, incorrect_letter, correct_guesses)
+            response = {
+                "incorrect_letter": ' '.join(incorrect_letter),
+                "incorrect_word": ' '.join(incorrect_word),
+                "turns_remaining": num_turns - turns_played,
+                "game_over": turns_played == num_turns,
+                "correct_guess": False,
+                "hint": hint,
+            }
 
-        # Capture response from the game loop after finishing all turns
+        turns_played += 1
+
         response = {
-        "incorrect_letter": incorrect_letter,
-        "incorrect_word": incorrect_word,
-        "turns_remaining": num_turns - turns_played,
-        "game_over": turns_played == num_turns,
-        "correct_guess": guess == word_to_guess,
-        "hint": hint  # Include the hint in the response
-    }
+            "incorrect_letter": incorrect_letter,
+            "incorrect_word": incorrect_word,
+            "turns_remaining": num_turns - turns_played,
+            "game_over": turns_played == num_turns,
+            "correct_guess": guess == word_to_guess,
+            "hint": hint
+        }
 
         return jsonify(response)
 
