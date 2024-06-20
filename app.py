@@ -4,7 +4,7 @@ import random
 
 def create_app():
     app_instance = Flask(__name__)
-    CORS(app_instance, resources={r"/*": {"origins": "https://safariguessinggame.onrender.com", "supports_credentials": True}})
+    CORS(app_instance, resources={r"/*": {"origins": "https://safariguessingame-0deac2bf61b5.herokuapp.com/", "supports_credentials": True}})
 
     @app_instance.route('/')
     def index():
@@ -42,11 +42,11 @@ def start_game():
     return jsonify(response)
 
 @app.route('/app/make_guess', methods=['OPTIONS', 'POST'])
-@cross_origin(origin='https://safariguessinggame.onrender.com', supports_credentials=True)
+@cross_origin(origin='https://safariguessingame-0deac2bf61b5.herokuapp.com/', supports_credentials=True)
 def handle_make_guess():
     if request.method == 'OPTIONS':
         headers = {
-            'Access-Control-Allow-Origin': 'https://safariguessinggame.onrender.com',
+            'Access-Control-Allow-Origin': 'https://safariguessingame-0deac2bf61b5.herokuapp.com/',
             'Access-Control-Allow-Methods': 'POST',
             'Access-Control-Allow-Headers': 'Content-Type',
             'Access-Control-Allow-Credentials': 'true',
